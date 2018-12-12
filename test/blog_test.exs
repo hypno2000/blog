@@ -73,7 +73,7 @@ defmodule BlogTest do
       |> preload([user: u, language: l], user: {u, language: l})
       |> Repo.one!()
 
-    assert %Country{} = post.user.country
     assert %Language{} = post.user.language
+    assert %Country{} = post.user.country
   end
 end
