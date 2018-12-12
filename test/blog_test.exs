@@ -76,4 +76,17 @@ defmodule BlogTest do
     assert %Language{} = post.user.language
     assert %Country{} = post.user.country
   end
+
+  test "chaining preload non-nested joined assocs", %{post_id: post_id} do
+    post =
+      from(p in Post, as: :post, where: p.id == ^post_id)
+      |> join(:inner, [post: p], u in assoc(p, :user), as: :user)
+      |> join(:inner, [post: p], s in assoc(p, :section), as: :section)
+      |> preload([user: c], user: c)
+      |> preload([section: l], section: l)
+      |> Repo.one!()
+
+    assert %User{} = post.user
+    assert %Section{} = post.section
+  end
 end
